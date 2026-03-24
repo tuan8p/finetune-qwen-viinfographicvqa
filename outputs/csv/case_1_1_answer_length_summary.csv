@@ -1,8 +1,0 @@
-level,scope_name,sample_count,mean_answer_tokens,median_answer_tokens,p90_answer_tokens,short_answer_ratio_le_3_tokens
-overall,overall,20409,5.1299,2.0,12.0,0.633152
-task_family,single,13895,5.3145,2.0,13.0,0.635049
-task_family,multi,6514,4.7363,2.0,11.0,0.629107
-split,single_train,12521,5.3173,2.0,13.0,0.633176
-split,single_test,1374,5.2889,2.0,12.0,0.652111
-split,multi_train,5878,4.7409,2.0,11.0,0.631848
-split,multi_test,636,4.6934,2.0,11.0,0.603774

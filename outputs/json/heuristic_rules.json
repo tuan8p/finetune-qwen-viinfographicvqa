@@ -1,0 +1,159 @@
+{
+  "heuristic_rules": {
+    "answer_type": {
+      "yes_no_tokens": [
+        "co",
+        "khong",
+        "dung",
+        "sai",
+        "yes",
+        "no"
+      ],
+      "entity_question_cues": [
+        "tên",
+        "quốc gia nào",
+        "đội nào",
+        "vùng nào",
+        "khu vực nào",
+        "thành phố nào",
+        "tỉnh nào",
+        "sân bay nào",
+        "ai"
+      ],
+      "number_like_pattern": "^[\\d\\s.,%/:+\\-]+$",
+      "span_sources": [
+        "image-span",
+        "question-span",
+        "multi-span",
+        "Multi-Image Spans"
+      ]
+    },
+    "question_type": {
+      "compare_cues": [
+        "so sánh",
+        "chênh lệch",
+        "cao hơn",
+        "thấp hơn",
+        "nhiều hơn",
+        "ít hơn",
+        "hơn bao nhiêu"
+      ],
+      "how_many_cues": [
+        "bao nhiêu",
+        "mấy",
+        "số lượng",
+        "tổng số"
+      ],
+      "when_cues": [
+        "khi nào",
+        "ngày nào",
+        "thời gian nào",
+        "lúc nào",
+        "thời điểm nào"
+      ],
+      "which_cues": [
+        "nào",
+        "đâu"
+      ],
+      "what_cues": [
+        "là gì",
+        "gì",
+        "cho biết"
+      ],
+      "list_cues": [
+        "những",
+        "các",
+        "liệt kê",
+        "gồm"
+      ],
+      "count_cues": [
+        "số",
+        "bao nhiêu",
+        "tổng"
+      ],
+      "reasoning_cues": [
+        "tổng",
+        "so sánh",
+        "chênh lệch",
+        "dựa vào",
+        "tính",
+        "hơn bao nhiêu",
+        "trung bình",
+        "lần lượt",
+        "nhiều hơn",
+        "ít hơn"
+      ],
+      "reasoning_sources": [
+        "non-extractive",
+        "Cross-Image Synthesis",
+        "Non-Span"
+      ]
+    },
+    "cross_image_dependency": {
+      "comparison_cues": [
+        "so sánh",
+        "chênh lệch",
+        "cao hơn",
+        "thấp hơn",
+        "nhiều hơn",
+        "ít hơn",
+        "hơn bao nhiêu"
+      ],
+      "aggregation_cues": [
+        "tổng",
+        "cộng",
+        "lần lượt",
+        "bao gồm",
+        "dựa trên hai hình",
+        "theo thông tin trên hình ảnh",
+        "lần lượt là"
+      ]
+    },
+    "tokenization": {
+      "numeric_unit_pattern": "\\d+(?:[.,]\\d+)?(?:%|°c|km|kg|ha|m2|m3|usd|đ|h)",
+      "slash_pattern": "/",
+      "hyphen_pattern": "-",
+      "abbreviation_pattern": "\\b[a-zA-Z][a-zA-Z0-9]{1,9}\\b",
+      "date_pattern": "\\b\\d{1,2}[/-]\\d{1,2}(?:[/-]\\d{2,4})?\\b",
+      "time_pattern": "\\b\\d{1,2}h\\b",
+      "currency_pattern": "\\b(?:usd|vnd|đồng|triệu đồng|tỷ đồng)\\b",
+      "known_abbreviations": [
+        "gdp",
+        "cptpp",
+        "eu",
+        "asean",
+        "covid",
+        "who",
+        "vnd",
+        "usd",
+        "fdi",
+        "f0",
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "thpt",
+        "ubnd",
+        "bhyt",
+        "bhxh",
+        "hiv",
+        "aids",
+        "dna",
+        "sars",
+        "wb",
+        "imf",
+        "g7",
+        "g20",
+        "asem",
+        "apec",
+        "asem"
+      ]
+    },
+    "diacritics": {
+      "normalization_forms": [
+        "NFC",
+        "NFD"
+      ]
+    }
+  }
+}

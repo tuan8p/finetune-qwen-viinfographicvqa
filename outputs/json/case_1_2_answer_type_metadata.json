@@ -1,0 +1,14 @@
+{
+  "case_id": "case_1_2_answer_type",
+  "title": "Answer Semantic Type Distribution",
+  "metadata": {
+    "overall_counts": {
+      "text_span_like": 8336,
+      "number": 8201,
+      "entity_like": 3670,
+      "other": 202
+    }
+  },
+  "summary_row_count": 27,
+  "detail_row_count": 20409
+}

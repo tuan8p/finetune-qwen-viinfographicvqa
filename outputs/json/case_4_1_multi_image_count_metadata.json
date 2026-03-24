@@ -1,0 +1,13 @@
+{
+  "case_id": "case_4_1_multi_image_count",
+  "title": "Number of Images per Multi-image Sample",
+  "metadata": {
+    "overall_counts": {
+      "4": 470,
+      "3": 3773,
+      "2": 2271
+    }
+  },
+  "summary_row_count": 12,
+  "detail_row_count": 6514
+}

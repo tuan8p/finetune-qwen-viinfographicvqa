@@ -1,0 +1,8 @@
+level,scope_name,image_count,mean_width,mean_height,mean_aspect_ratio,shorter_side_lt_512_ratio
+overall,overall,6747,1565.3198,2588.0411,0.6599,0.002371
+task_family,multi,5332,1561.2809,2627.3389,0.6439,0.002251
+task_family,single,1980,1566.4975,2473.1187,0.7014,0.003535
+split,multi_train,4823,1562.4931,2631.9699,0.6429,0.001866
+split,single_train,1788,1565.5453,2475.5011,0.701,0.003915
+split,multi_test,509,1549.7957,2583.4578,0.6533,0.005894
+split,single_test,192,1575.3646,2450.9323,0.7058,0.0

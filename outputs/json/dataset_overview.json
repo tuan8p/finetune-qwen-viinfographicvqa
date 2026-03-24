@@ -1,0 +1,254 @@
+{
+  "mode": "full",
+  "sample_count": 20409,
+  "split_counts": {
+    "single_train": 12521,
+    "single_test": 1374,
+    "multi_train": 5878,
+    "multi_test": 636
+  },
+  "task_family_counts": {
+    "single": 13895,
+    "multi": 6514
+  },
+  "answer_source_counts": {
+    "multi-span": 3428,
+    "non-extractive": 3400,
+    "question-span": 3455,
+    "image-span": 3612,
+    "Cross-Image Synthesis": 1213,
+    "Non-Span": 1856,
+    "Multi-Image Spans": 3445
+  },
+  "top_10_image_types": {
+    "Kinh tế - Hội nhập": 5528,
+    "Y tế - Cộng đồng": 4214,
+    "Văn hóa - Xã hội": 2522,
+    "Thiên tai - Tai nạn": 2027,
+    "Thể thao - Nghệ thuật": 1686,
+    "Dự báo thời tiết": 1584,
+    "Giáo dục - Khoa Học": 1320,
+    "Quốc phòng - An ninh": 1027,
+    "Nhân vật - Sự kiện": 501
+  },
+  "unique_image_counts_by_split": {
+    "single_train": 1788,
+    "single_test": 192,
+    "multi_train": 4823,
+    "multi_test": 509
+  },
+  "unique_image_counts_by_task_family": {
+    "single": 1980,
+    "multi": 5332
+  },
+  "image_inventory": {
+    "total_unique_images": 6747,
+    "status_counts": {
+      "ok": 6747
+    },
+    "records_preview": [
+      {
+        "image_path": "images/10.jpg",
+        "absolute_path": "D:\\Downloads\\BTL_DLA\\ViInfographicVQA_dataset\\images\\10.jpg",
+        "split_names": [
+          "multi_train"
+        ],
+        "task_families": [
+          "multi"
+        ],
+        "usage_count": 2,
+        "width": 1128,
+        "height": 2995,
+        "aspect_ratio": 0.376628,
+        "shorter_side": 1128,
+        "edge_density": 0.056327,
+        "entropy": 3.949583,
+        "connected_components": 519,
+        "status": "ok",
+        "error_message": null
+      },
+      {
+        "image_path": "images/100.jpg",
+        "absolute_path": "D:\\Downloads\\BTL_DLA\\ViInfographicVQA_dataset\\images\\100.jpg",
+        "split_names": [
+          "single_train"
+        ],
+        "task_families": [
+          "single"
+        ],
+        "usage_count": 5,
+        "width": 2500,
+        "height": 3917,
+        "aspect_ratio": 0.638244,
+        "shorter_side": 2500,
+        "edge_density": 0.018741,
+        "entropy": 5.823236,
+        "connected_components": 1033,
+        "status": "ok",
+        "error_message": null
+      },
+      {
+        "image_path": "images/1000.jpg",
+        "absolute_path": "D:\\Downloads\\BTL_DLA\\ViInfographicVQA_dataset\\images\\1000.jpg",
+        "split_names": [
+          "single_train"
+        ],
+        "task_families": [
+          "single"
+        ],
+        "usage_count": 11,
+        "width": 2500,
+        "height": 4341,
+        "aspect_ratio": 0.575904,
+        "shorter_side": 2500,
+        "edge_density": 0.027312,
+        "entropy": 2.373193,
+        "connected_components": 1619,
+        "status": "ok",
+        "error_message": null
+      },
+      {
+        "image_path": "images/1002.jpg",
+        "absolute_path": "D:\\Downloads\\BTL_DLA\\ViInfographicVQA_dataset\\images\\1002.jpg",
+        "split_names": [
+          "multi_test"
+        ],
+        "task_families": [
+          "multi"
+        ],
+        "usage_count": 5,
+        "width": 2500,
+        "height": 3891,
+        "aspect_ratio": 0.642508,
+        "shorter_side": 2500,
+        "edge_density": 0.03968,
+        "entropy": 4.542592,
+        "connected_components": 1999,
+        "status": "ok",
+        "error_message": null
+      },
+      {
+        "image_path": "images/1003.jpg",
+        "absolute_path": "D:\\Downloads\\BTL_DLA\\ViInfographicVQA_dataset\\images\\1003.jpg",
+        "split_names": [
+          "single_train"
+        ],
+        "task_families": [
+          "single"
+        ],
+        "usage_count": 8,
+        "width": 2500,
+        "height": 2813,
+        "aspect_ratio": 0.888731,
+        "shorter_side": 2500,
+        "edge_density": 0.034257,
+        "entropy": 3.967624,
+        "connected_components": 1192,
+        "status": "ok",
+        "error_message": null
+      },
+      {
+        "image_path": "images/1004.jpg",
+        "absolute_path": "D:\\Downloads\\BTL_DLA\\ViInfographicVQA_dataset\\images\\1004.jpg",
+        "split_names": [
+          "single_train"
+        ],
+        "task_families": [
+          "single"
+        ],
+        "usage_count": 7,
+        "width": 2250,
+        "height": 1969,
+        "aspect_ratio": 1.142712,
+        "shorter_side": 1969,
+        "edge_density": 0.047756,
+        "entropy": 3.787016,
+        "connected_components": 832,
+        "status": "ok",
+        "error_message": null
+      },
+      {
+        "image_path": "images/1008.jpg",
+        "absolute_path": "D:\\Downloads\\BTL_DLA\\ViInfographicVQA_dataset\\images\\1008.jpg",
+        "split_names": [
+          "multi_train"
+        ],
+        "task_families": [
+          "multi"
+        ],
+        "usage_count": 3,
+        "width": 2500,
+        "height": 3718,
+        "aspect_ratio": 0.672405,
+        "shorter_side": 2500,
+        "edge_density": 0.020497,
+        "entropy": 2.815961,
+        "connected_components": 962,
+        "status": "ok",
+        "error_message": null
+      },
+      {
+        "image_path": "images/1009.jpg",
+        "absolute_path": "D:\\Downloads\\BTL_DLA\\ViInfographicVQA_dataset\\images\\1009.jpg",
+        "split_names": [
+          "multi_train",
+          "single_train"
+        ],
+        "task_families": [
+          "multi",
+          "single"
+        ],
+        "usage_count": 11,
+        "width": 2500,
+        "height": 3451,
+        "aspect_ratio": 0.724428,
+        "shorter_side": 2500,
+        "edge_density": 0.023561,
+        "entropy": 3.272516,
+        "connected_components": 938,
+        "status": "ok",
+        "error_message": null
+      },
+      {
+        "image_path": "images/1011.jpg",
+        "absolute_path": "D:\\Downloads\\BTL_DLA\\ViInfographicVQA_dataset\\images\\1011.jpg",
+        "split_names": [
+          "multi_train"
+        ],
+        "task_families": [
+          "multi"
+        ],
+        "usage_count": 6,
+        "width": 2500,
+        "height": 2379,
+        "aspect_ratio": 1.050862,
+        "shorter_side": 2379,
+        "edge_density": 0.031612,
+        "entropy": 3.878324,
+        "connected_components": 894,
+        "status": "ok",
+        "error_message": null
+      },
+      {
+        "image_path": "images/1012.jpg",
+        "absolute_path": "D:\\Downloads\\BTL_DLA\\ViInfographicVQA_dataset\\images\\1012.jpg",
+        "split_names": [
+          "multi_train"
+        ],
+        "task_families": [
+          "multi"
+        ],
+        "usage_count": 2,
+        "width": 3174,
+        "height": 5434,
+        "aspect_ratio": 0.5841,
+        "shorter_side": 3174,
+        "edge_density": 0.01951,
+        "entropy": 3.460085,
+        "connected_components": 1725,
+        "status": "ok",
+        "error_message": null
+      }
+    ]
+  }
+}

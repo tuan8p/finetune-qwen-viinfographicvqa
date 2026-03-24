@@ -1,0 +1,9 @@
+level,scope_name,cross_image_dependency,count,ratio
+overall,overall,aggregation,4852,0.744857
+overall,overall,comparison,1662,0.255143
+task_family,multi,aggregation,4852,0.744857
+task_family,multi,comparison,1662,0.255143
+split,multi_train,aggregation,4380,0.745151
+split,multi_train,comparison,1498,0.254849
+split,multi_test,aggregation,472,0.742138
+split,multi_test,comparison,164,0.257862

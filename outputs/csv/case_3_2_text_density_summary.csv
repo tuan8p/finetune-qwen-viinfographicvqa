@@ -1,0 +1,8 @@
+level,scope_name,image_count,mean_edge_density,mean_entropy,mean_connected_components,p90_connected_components
+overall,overall,6747,0.0441,4.0833,1289.4301,2415.0
+task_family,multi,5332,0.0439,4.049,1291.5349,2422.8
+task_family,single,1980,0.0448,4.1772,1309.7348,2403.7
+split,multi_train,4823,0.0438,4.0472,1271.1713,2391.6
+split,single_train,1788,0.0446,4.1728,1263.821,2359.2
+split,multi_test,509,0.045,4.0658,1484.4892,2648.0
+split,single_test,192,0.0466,4.2177,1737.3073,2428.8

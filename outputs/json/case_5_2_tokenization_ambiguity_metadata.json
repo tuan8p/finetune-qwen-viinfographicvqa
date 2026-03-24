@@ -1,0 +1,18 @@
+{
+  "case_id": "case_5_2_tokenization_ambiguity",
+  "title": "Vietnamese Tokenization Ambiguity",
+  "metadata": {
+    "overall_counts": {
+      "abbreviation": 3692,
+      "numeric_unit_compact": 2765,
+      "none": 9340,
+      "date_time_currency": 5743,
+      "hyphen_form": 3973,
+      "slash_form": 5215,
+      "multi_span_delimiter": 4290
+    },
+    "total_samples": 20409
+  },
+  "summary_row_count": 49,
+  "detail_row_count": 20409
+}

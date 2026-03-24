@@ -1,0 +1,149 @@
+{
+  "started_at": "2026-03-24T07:30:39.225330+00:00",
+  "finished_at": "2026-03-24T07:45:31.680957+00:00",
+  "mode": "full",
+  "splits": [
+    "single_train",
+    "single_test",
+    "multi_train",
+    "multi_test"
+  ],
+  "sample_size_per_split": null,
+  "seed": 42,
+  "dataset_overview_json": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\json\\dataset_overview.json",
+  "heuristic_rules_json": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\json\\heuristic_rules.json",
+  "cases": [
+    {
+      "case_id": "case_1_1_answer_length",
+      "title": "Answer Length Distribution",
+      "duration_seconds": 1.088,
+      "artifacts": {
+        "summary_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_1_1_answer_length_summary.csv",
+        "detail_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_1_1_answer_length_details.csv",
+        "metadata_json": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\json\\case_1_1_answer_length_metadata.json",
+        "figures": [
+          "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\figures\\case_1_1_answer_length__answer_tokens_histogram.png"
+        ]
+      }
+    },
+    {
+      "case_id": "case_1_2_answer_type",
+      "title": "Answer Semantic Type Distribution",
+      "duration_seconds": 2.804,
+      "artifacts": {
+        "summary_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_1_2_answer_type_summary.csv",
+        "detail_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_1_2_answer_type_details.csv",
+        "metadata_json": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\json\\case_1_2_answer_type_metadata.json",
+        "figures": [
+          "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\figures\\case_1_2_answer_type__answer_type_overall.png"
+        ]
+      }
+    },
+    {
+      "case_id": "case_1_3_question_type",
+      "title": "Question Type Distribution",
+      "duration_seconds": 9.947,
+      "artifacts": {
+        "summary_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_1_3_question_type_summary.csv",
+        "detail_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_1_3_question_type_details.csv",
+        "metadata_json": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\json\\case_1_3_question_type_metadata.json",
+        "figures": [
+          "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\figures\\case_1_3_question_type__question_type_overall.png",
+          "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\figures\\case_1_3_question_type__reasoning_vs_lookup.png"
+        ]
+      }
+    },
+    {
+      "case_id": "case_2_1_answer_source",
+      "title": "Answer Source Distribution",
+      "duration_seconds": 0.233,
+      "artifacts": {
+        "summary_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_2_1_answer_source_summary.csv",
+        "detail_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_2_1_answer_source_details.csv",
+        "metadata_json": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\json\\case_2_1_answer_source_metadata.json",
+        "figures": [
+          "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\figures\\case_2_1_answer_source__answer_source_overall.png"
+        ]
+      }
+    },
+    {
+      "case_id": "case_3_1_image_resolution",
+      "title": "Image Resolution Distribution",
+      "duration_seconds": 0.309,
+      "artifacts": {
+        "summary_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_3_1_image_resolution_summary.csv",
+        "detail_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_3_1_image_resolution_details.csv",
+        "metadata_json": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\json\\case_3_1_image_resolution_metadata.json",
+        "figures": [
+          "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\figures\\case_3_1_image_resolution__image_resolution_scatter.png"
+        ]
+      }
+    },
+    {
+      "case_id": "case_3_2_text_density",
+      "title": "Text Density Proxy Analysis",
+      "duration_seconds": 0.523,
+      "artifacts": {
+        "summary_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_3_2_text_density_summary.csv",
+        "detail_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_3_2_text_density_details.csv",
+        "metadata_json": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\json\\case_3_2_text_density_metadata.json",
+        "figures": [
+          "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\figures\\case_3_2_text_density__edge_density_histogram.png",
+          "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\figures\\case_3_2_text_density__entropy_vs_components.png"
+        ]
+      }
+    },
+    {
+      "case_id": "case_4_1_multi_image_count",
+      "title": "Number of Images per Multi-image Sample",
+      "duration_seconds": 0.211,
+      "artifacts": {
+        "summary_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_4_1_multi_image_count_summary.csv",
+        "detail_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_4_1_multi_image_count_details.csv",
+        "metadata_json": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\json\\case_4_1_multi_image_count_metadata.json",
+        "figures": [
+          "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\figures\\case_4_1_multi_image_count__multi_image_count_overall.png"
+        ]
+      }
+    },
+    {
+      "case_id": "case_4_2_cross_image_dependency",
+      "title": "Cross-image Dependency Classification",
+      "duration_seconds": 1.264,
+      "artifacts": {
+        "summary_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_4_2_cross_image_dependency_summary.csv",
+        "detail_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_4_2_cross_image_dependency_details.csv",
+        "metadata_json": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\json\\case_4_2_cross_image_dependency_metadata.json",
+        "figures": [
+          "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\figures\\case_4_2_cross_image_dependency__cross_image_dependency_overall.png"
+        ]
+      }
+    },
+    {
+      "case_id": "case_5_1_diacritics",
+      "title": "Vietnamese Diacritics Consistency",
+      "duration_seconds": 4.05,
+      "artifacts": {
+        "summary_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_5_1_diacritics_summary.csv",
+        "detail_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_5_1_diacritics_details.csv",
+        "metadata_json": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\json\\case_5_1_diacritics_metadata.json",
+        "figures": [
+          "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\figures\\case_5_1_diacritics__diacritic_consistency_overall.png"
+        ]
+      }
+    },
+    {
+      "case_id": "case_5_2_tokenization_ambiguity",
+      "title": "Vietnamese Tokenization Ambiguity",
+      "duration_seconds": 2.428,
+      "artifacts": {
+        "summary_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_5_2_tokenization_ambiguity_summary.csv",
+        "detail_csv": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\csv\\case_5_2_tokenization_ambiguity_details.csv",
+        "metadata_json": "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\json\\case_5_2_tokenization_ambiguity_metadata.json",
+        "figures": [
+          "D:\\Downloads\\BTL_DLA\\EDA_Preprocessing\\outputs\\figures\\case_5_2_tokenization_ambiguity__tokenization_flags_overall.png"
+        ]
+      }
+    }
+  ]
+}

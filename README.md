@@ -50,9 +50,12 @@ Ngoài ra pipeline EDA còn sinh:
 
 Rule đang dùng cho preprocessing:
 
-- train lấy `20%` từ `single_train` và `multi_train`
-- valid lấy `10%` của phần train đã sample
+- nếu `use_subdataset=True` thì lấy `10%` từ `single_train` và `multi_train` để tạo `sub train`
+- nếu `use_subdataset=True` thì `sub val` lấy `20%` từ `sub train`
+- nếu `use_subdataset=False` thì không tạo `sub train`, mà tách `20%` valid trực tiếp từ train gốc
 - test giữ nguyên raw
+- hỗ trợ `data_mode`:
+  `single`, `multi`, `single_and_multi`
 - loại sample có `answer > 20 token`
 - không resize ảnh
 - không OCR
@@ -162,6 +165,59 @@ Lệnh này sẽ:
 python EDA_Preprocessing/run_preprocessing.py --seed 42
 ```
 
+Khi đó:
+
+- `sub train` lấy `10%` từ `single_train` và `multi_train`
+- `sub val` lấy `20%` từ `sub train`
+- `test` giữ nguyên raw
+
+### Chạy theo từng data mode
+
+```bash
+python EDA_Preprocessing/run_preprocessing.py --data-mode single
+python EDA_Preprocessing/run_preprocessing.py --data-mode multi
+python EDA_Preprocessing/run_preprocessing.py --data-mode single_and_multi
+```
+
+### Chạy mixed mode, mode này sẽ có thêm `test_single`
+
+```bash
+python EDA_Preprocessing/run_preprocessing.py --data-mode single_and_multi --preview-batch
+```
+
+### Dataloader có những mode nào
+
+`data_mode` hiện có 3 chế độ:
+
+- `single`
+  chỉ dùng dữ liệu `single image question`
+- `multi`
+  chỉ dùng dữ liệu `multi image question`
+- `single_and_multi`
+  dùng chung cả `single + multi`
+
+Với từng mode, dataloader sẽ được tạo như sau:
+
+- `single`
+  có `train_loader`, `valid_loader`, `test_loader`
+  trong đó `test_loader` chỉ chứa `single_test`
+- `multi`
+  có `train_loader`, `valid_loader`, `test_loader`
+  trong đó `test_loader` chỉ chứa `multi_test`
+- `single_and_multi`
+  có `train_loader`, `valid_loader`, `test_loader`, `extra_test_loader`
+  trong đó:
+  `test_loader` = `test_all` = `single_test + multi_test`
+  `extra_test_loader` = `test_single` = chỉ `single_test`
+
+Nếu dùng `build_finetune_dataset_bundle(...)` hoặc `build_finetune_dataloaders(...)`:
+
+- `train_dataset` / `train_loader` luôn là tập train theo mode đã chọn
+- `valid_dataset` / `valid_loader` luôn là tập validation theo mode đã chọn
+- `test_dataset` / `test_loader` là test chính của mode
+- riêng `single_and_multi` sẽ có thêm:
+  `extra_test_dataset` / `extra_test_loader` với tên `test_single`
+
 ### Chạy preprocessing và preview dataloader batch
 
 ```bash
@@ -173,6 +229,12 @@ python EDA_Preprocessing/run_preprocessing.py --preview-batch --batch-size 4
 ```bash
 python EDA_Preprocessing/run_preprocessing.py --disable-subdataset
 ```
+
+Khi đó:
+
+- train dùng phần còn lại `80%` từ `single_train` và `multi_train`
+- valid lấy `20%` trực tiếp từ train gốc
+- test vẫn giữ nguyên raw
 
 ### Tách riêng lệnh chạy analysis và preprocessing
 
@@ -186,8 +248,14 @@ python EDA_Preprocessing/run_preprocessing.py --preview-batch
 Khi chạy `run_preprocessing.py`, pipeline sẽ:
 
 - đọc raw sample từ `ViInfographicVQA_dataset/data/*.json`
-- tạo subdataset logic:
-  train lấy `20%` từ `single_train` và `multi_train`, valid lấy `10%` của phần sampled, test giữ nguyên raw
+  - tạo subdataset logic:
+    sub train lấy `10%` từ `single_train` và `multi_train`, sub val lấy `20%` từ `sub train`, test giữ nguyên raw
+- nếu `use_subdataset=False`:
+  train lấy `80%` từ train gốc, valid lấy `20%` trực tiếp từ train gốc, test vẫn giữ nguyên raw
+- lọc train / valid / test theo `data_mode`:
+  chỉ single-image question, chỉ multi-image question, hoặc mixed
+- riêng `single_and_multi` sẽ có:
+  `train`, `valid`, `test_all`, `test_single`
 - normalize text cho `question` và `answer`:
   Unicode `NFC`, trim, collapse whitespace, lowercase, ascii-folded
 - lọc sample có `answer > 20 token`
@@ -227,6 +295,7 @@ train_dataset, valid_dataset, test_dataset = build_finetune_datasets(
     dataset_root=Path("D:/Downloads/BTL_DLA/ViInfographicVQA_dataset"),
     use_subdataset=True,
     seed=42,
+    data_mode="single_and_multi",
 )
 
 collate_fn = build_collate_fn()
@@ -253,7 +322,7 @@ test_loader = DataLoader(
 )
 ```
 
-### Nếu muốn dùng full raw train thay vì subdataset
+### Nếu muốn tắt subdataset mode
 
 ```python
 from pathlib import Path
@@ -262,14 +331,49 @@ train_dataset, valid_dataset, test_dataset = build_finetune_datasets(
     dataset_root=Path("D:/Downloads/BTL_DLA/ViInfographicVQA_dataset"),
     use_subdataset=False,
     seed=42,
+    data_mode="single",
 )
 ```
 
 Khi đó:
 
-- `train_dataset` = `single_train + multi_train`
-- `valid_dataset` = rỗng
+- `train_dataset` = `80%` từ train gốc
+- `valid_dataset` = `20%` từ train gốc
 - `test_dataset` = `single_test + multi_test`
+
+### Nếu muốn mixed mode và thêm `test_single`
+
+```python
+from pathlib import Path
+
+from torch.utils.data import DataLoader
+
+from eda_preprocessing.training import build_collate_fn, build_finetune_dataset_bundle
+
+bundle = build_finetune_dataset_bundle(
+    dataset_root=Path("D:/Downloads/BTL_DLA/ViInfographicVQA_dataset"),
+    use_subdataset=True,
+    seed=42,
+    data_mode="single_and_multi",
+)
+
+collate_fn = build_collate_fn()
+
+train_loader = DataLoader(bundle.train_dataset, batch_size=4, shuffle=True, collate_fn=collate_fn)
+valid_loader = DataLoader(bundle.valid_dataset, batch_size=4, shuffle=False, collate_fn=collate_fn)
+test_loader = DataLoader(bundle.test_dataset, batch_size=4, shuffle=False, collate_fn=collate_fn)
+test_single_loader = DataLoader(
+    bundle.extra_test_dataset,
+    batch_size=4,
+    shuffle=False,
+    collate_fn=collate_fn,
+)
+```
+
+Khi đó:
+
+- `test_loader` = `test_all` = mixed `single_test + multi_test`
+- `test_single_loader` = chỉ `single_test`
 
 ### Batch trả ra từ `collate_fn`
 

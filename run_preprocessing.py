@@ -10,7 +10,7 @@ SRC_DIR = CURRENT_DIR / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from eda_preprocessing.training import build_collate_fn, build_finetune_datasets
+from eda_preprocessing.training import DATA_MODES, build_finetune_dataloaders, build_finetune_dataset_bundle
 
 
 def parse_args() -> argparse.Namespace:
@@ -35,7 +35,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--disable-subdataset",
         action="store_true",
-        help="Disable 20%% train sampling and 10%% valid split; use full raw train instead",
+        help="Disable subdataset mode; split valid directly from the full raw train instead",
+    )
+    parser.add_argument(
+        "--data-mode",
+        choices=DATA_MODES,
+        default="single_and_multi",
+        help="Dataset mode: single-only, multi-only, or mixed; mixed mode also exposes an extra single-only test loader",
     )
     parser.add_argument(
         "--preview-batch",
@@ -48,54 +54,48 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
 
-    train_dataset, valid_dataset, test_dataset = build_finetune_datasets(
+    bundle = build_finetune_dataset_bundle(
         dataset_root=Path(args.dataset_root).resolve(),
         use_subdataset=not args.disable_subdataset,
         seed=args.seed,
+        data_mode=args.data_mode,
     )
 
     print("Preprocessing summary")
     print(f"- dataset_root: {Path(args.dataset_root).resolve()}")
     print(f"- use_subdataset: {not args.disable_subdataset}")
     print(f"- seed: {args.seed}")
-    print(f"- train_samples: {len(train_dataset)}")
-    print(f"- valid_samples: {len(valid_dataset)}")
-    print(f"- test_samples: {len(test_dataset)}")
+    print(f"- data_mode: {args.data_mode}")
+    print(f"- train_samples: {len(bundle.train_dataset)}")
+    print(f"- valid_samples: {len(bundle.valid_dataset)}")
+    print(f"- test_all_samples: {len(bundle.test_dataset)}")
+    if bundle.extra_test_dataset is not None:
+        print(f"- {bundle.extra_test_name}_samples: {len(bundle.extra_test_dataset)}")
 
     if args.preview_batch:
-        try:
-            from torch.utils.data import DataLoader
-        except (ImportError, OSError) as exc:
-            raise SystemExit(
-                "PyTorch is required for --preview-batch because it builds DataLoader objects. "
-                f"Original import error: {exc}"
-            ) from exc
-
-        collate_fn = build_collate_fn()
-        train_loader = DataLoader(
-            train_dataset,
+        dataloader_bundle = build_finetune_dataloaders(
+            dataset_root=Path(args.dataset_root).resolve(),
             batch_size=args.batch_size,
-            shuffle=True,
-            collate_fn=collate_fn,
-        )
-        valid_loader = DataLoader(
-            valid_dataset,
-            batch_size=args.batch_size,
-            shuffle=False,
-            collate_fn=collate_fn,
-        )
-        test_loader = DataLoader(
-            test_dataset,
-            batch_size=args.batch_size,
-            shuffle=False,
-            collate_fn=collate_fn,
+            use_subdataset=not args.disable_subdataset,
+            seed=args.seed,
+            data_mode=args.data_mode,
         )
 
-        print(f"- train_batches: {len(train_loader)}")
-        print(f"- valid_batches: {len(valid_loader)}")
-        print(f"- test_batches: {len(test_loader)}")
+        print(f"- train_batches: {len(dataloader_bundle.train_loader)}")
+        print(f"- valid_batches: {len(dataloader_bundle.valid_loader)}")
+        print(f"- test_all_batches: {len(dataloader_bundle.test_loader)}")
+        if dataloader_bundle.extra_test_loader is not None:
+            print(f"- {dataloader_bundle.extra_test_name}_batches: {len(dataloader_bundle.extra_test_loader)}")
 
-        for split_name, loader in (("train", train_loader), ("valid", valid_loader), ("test", test_loader)):
+        loaders = [
+            ("train", dataloader_bundle.train_loader),
+            ("valid", dataloader_bundle.valid_loader),
+            ("test_all", dataloader_bundle.test_loader),
+        ]
+        if dataloader_bundle.extra_test_loader is not None:
+            loaders.append((str(dataloader_bundle.extra_test_name), dataloader_bundle.extra_test_loader))
+
+        for split_name, loader in loaders:
             if len(loader) == 0:
                 print(f"- {split_name}_preview: empty")
                 continue

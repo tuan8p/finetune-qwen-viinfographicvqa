@@ -58,24 +58,34 @@ def build_subdataset_splits(
     samples: list[DatasetSample] | tuple[DatasetSample, ...],
     enabled: bool = True,
     seed: int = 42,
-    train_fraction: float = 0.2,
-    valid_fraction_within_sampled: float = 0.1,
+    train_fraction: float = 0.1,
+    valid_fraction_within_sampled: float = 0.2,
+    valid_fraction_when_disabled: float = 0.2,
 ) -> SubdatasetSplits:
     _validate_fraction("train_fraction", train_fraction)
     _validate_fraction("valid_fraction_within_sampled", valid_fraction_within_sampled)
+    _validate_fraction("valid_fraction_when_disabled", valid_fraction_when_disabled)
 
     grouped: dict[str, list[DatasetSample]] = defaultdict(list)
     for sample in samples:
         grouped[sample.split_name].append(sample)
 
+    rng = random.Random(seed)
+
     if not enabled:
+        train_samples: list[DatasetSample] = []
+        valid_samples: list[DatasetSample] = []
+        for split_name in TRAIN_SPLITS:
+            train_chunk, valid_chunk = _split_train_valid(grouped[split_name], valid_fraction_when_disabled, rng)
+            train_samples.extend(train_chunk)
+            valid_samples.extend(valid_chunk)
+
         return SubdatasetSplits(
-            train_samples=tuple(grouped["single_train"] + grouped["multi_train"]),
-            valid_samples=tuple(),
+            train_samples=tuple(train_samples),
+            valid_samples=tuple(valid_samples),
             test_samples=tuple(grouped["single_test"] + grouped["multi_test"]),
         )
 
-    rng = random.Random(seed)
     train_samples: list[DatasetSample] = []
     valid_samples: list[DatasetSample] = []
 

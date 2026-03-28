@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from eda_preprocessing.core.contracts import DatasetSample
+from ..core.contracts import DatasetSample
 
 
 @dataclass(frozen=True, slots=True)

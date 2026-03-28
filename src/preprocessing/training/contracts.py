@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from eda_preprocessing.preprocessing.contracts import PreprocessedSample
+from ..preprocessing.contracts import PreprocessedSample
 
 
 DATA_MODES = (

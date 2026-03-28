@@ -3,8 +3,8 @@ from __future__ import annotations
 import random
 from collections import defaultdict
 
-from eda_preprocessing.core.contracts import DatasetSample
-from eda_preprocessing.subdataset.contracts import SubdatasetSplits
+from ..core.contracts import DatasetSample
+from .contracts import SubdatasetSplits
 
 
 TRAIN_SPLITS = ("single_train", "multi_train")

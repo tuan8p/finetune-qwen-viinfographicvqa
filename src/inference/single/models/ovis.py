@@ -3,7 +3,6 @@ from PIL import Image
 from transformers import AutoModelForCausalLM, BitsAndBytesConfig
 from src.inference.single.models.base_model import VQAModel
 from src.common.utils import get_system_prompt, parse_answer
-from src.config import get_model_path
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -12,7 +11,9 @@ class OvisModel(VQAModel):
     def __init__(self, model_path: str = None, load_test: bool = False, **kwargs):
         super().__init__(**kwargs)
         self.load_test = load_test
-        self.model_path = model_path or get_model_path("ovis")
+        self.model_path = model_path
+        if not self.model_path:
+            raise ValueError("OvisModel requires an explicit model_path from inference config.")
         self._set_clean_model_name()
         self.load_model()
         

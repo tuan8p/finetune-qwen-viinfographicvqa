@@ -4,7 +4,7 @@ import json
 import random
 from pathlib import Path
 
-from eda_preprocessing.core.contracts import DatasetSample, MultiSample, SingleSample
+from ..core.contracts import DatasetSample, MultiSample, SingleSample
 
 
 SUPPORTED_SPLITS = (

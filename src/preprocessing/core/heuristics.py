@@ -3,9 +3,9 @@ from __future__ import annotations
 import re
 import unicodedata
 
-from eda_preprocessing.core.contracts import DatasetSample
-from eda_preprocessing.core.rules import HEURISTIC_RULES
-from eda_preprocessing.core.text_utils import (
+from .contracts import DatasetSample
+from .rules import HEURISTIC_RULES
+from .text_utils import (
     contains_diacritics,
     has_combining_marks,
     lowercase_text,

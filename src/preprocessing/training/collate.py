@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from eda_preprocessing.preprocessing.contracts import PreprocessedSample
+from ..preprocessing.contracts import PreprocessedSample
 
 
 def build_collate_fn() -> Callable[[list[PreprocessedSample]], dict[str, object]]:

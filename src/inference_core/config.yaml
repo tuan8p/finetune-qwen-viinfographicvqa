@@ -1,0 +1,39 @@
+dataset_root: "D:/Downloads/BTL_DLA/ViInfographicVQA_dataset"
+data_mode: "single"
+use_subdataset: false
+seed: 42
+
+model_key: "qwenvl"
+model_path: null
+model_registry:
+  qwenvl: "Qwen/Qwen2.5-VL-7B-Instruct"
+  internvl: "OpenGVLab/InternVL3_5-8B"
+  phi: "microsoft/Phi-4-multimodal-instruct"
+  minicpm: "openbmb/MiniCPM-o-2-6"
+  molmo: "allenai/Molmo-7B-D-0924"
+  ovis: "AIDC-AI/Ovis2.5-9B"
+  videollama: "DAMO-NLP-SG/VideoLLaMA3-7B-Image"
+  llava: "unsloth/llava-v1.6-mistral-7b-hf-bnb-4bit"
+  aya_vision: "CohereLabs/aya-vision-8b"
+attn_implementation: "flash_attention_2"
+test_loading: false
+
+batch_size: 1
+save_interval: 100
+output_dir: "results"
+dataloader_num_workers: 4
+
+use_wandb: false
+wandb_env_file: "ft-qwen/.wandb.env"
+wandb_project: "vqa-inference"
+wandb_entity: null
+wandb_group: "inference"
+wandb_job_type: "predict"
+wandb_run_name: null
+wandb_notes: null
+wandb_mode: "online"
+wandb_tags:
+  - "viinfographicvqa"
+  - "inference"
+wandb_save_code: true
+wandb_log_artifacts: true

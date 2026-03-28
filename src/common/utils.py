@@ -1,5 +1,6 @@
 """Shared utility functions for VQA inference."""
 
+import os
 import random
 from pathlib import Path
 from typing import Optional
@@ -13,6 +14,13 @@ SYSTEM_PROMPT = (
     "Answer the following question based solely on the image content "
     "concisely with a single term."
 )
+
+
+def get_images_dir(override: Optional[str] = None) -> Optional[str]:
+    """Get images directory from override or environment."""
+    if override:
+        return override
+    return os.environ.get("VQA_IMAGES_DIR")
 
 
 def set_seed(seed: int = 42) -> None:
@@ -96,8 +104,6 @@ def load_images(
         FileNotFoundError: If image file not found
         ValueError: If relative path without base_img_dir
     """
-    from src.config import get_images_dir
-
     images = []
     resolved_base = base_img_dir or get_images_dir()
 
@@ -140,8 +146,6 @@ def get_image_paths(
         FileNotFoundError: If image file not found
         ValueError: If relative path without base_img_dir
     """
-    from src.config import get_images_dir
-
     paths = []
     resolved_base = base_img_dir or get_images_dir()
 

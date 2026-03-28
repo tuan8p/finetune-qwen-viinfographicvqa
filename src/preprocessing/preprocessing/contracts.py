@@ -11,6 +11,7 @@ class PreprocessedSample:
     task_family: str
     image_type: str
     answer_source: str
+    element: str | None
     image_paths: tuple[str, ...]
     image_count: int
     raw_question: str

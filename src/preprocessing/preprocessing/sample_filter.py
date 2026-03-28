@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from eda_preprocessing.core.text_utils import whitespace_tokens
+from ..core.text_utils import whitespace_tokens
 
 
 MAX_ANSWER_TOKENS = 20

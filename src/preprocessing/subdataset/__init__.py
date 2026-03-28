@@ -1,4 +1,4 @@
-from eda_preprocessing.subdataset.builder import build_subdataset_splits
-from eda_preprocessing.subdataset.contracts import SubdatasetSplits
+from .builder import build_subdataset_splits
+from .contracts import SubdatasetSplits
 
 __all__ = ["SubdatasetSplits", "build_subdataset_splits"]

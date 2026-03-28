@@ -13,20 +13,24 @@ from src.inference_core.config import resolve_model_path
 
 
 MODELS = {
-    "internvl": "src.inference.single.models.internvl.InternVLModel",
-    "qwenvl": "src.inference.single.models.qwenvl.QwenVLModel",
-    "ovis": "src.inference.single.models.ovis.OvisModel",
+    "internvl": "src.inference.single_and_multi.models.internvl.InternVLModel",
+    "qwenvl": "src.inference.single_and_multi.models.qwenvl.QwenVLModel",
+    "ovis": "src.inference.single_and_multi.models.ovis.OvisModel",
 }
 
 
 def parse_args():
-    parser = build_arg_parser("Run single-image VQA inference", MODELS)
+    parser = build_arg_parser("Run single+multi-image VQA inference", MODELS)
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    config = build_runtime_config(args, data_mode="single", default_output_subdir="results/single")
+    config = build_runtime_config(
+        args,
+        data_mode="single_and_multi",
+        default_output_subdir="results/single_and_multi",
+    )
 
     wandb_started = False
     try:
@@ -47,11 +51,22 @@ def main() -> int:
             model=model,
             dataset=data_bundle.test_dataset,
             config=config,
-            output_path=output_path_for_split(config, model.model_name, "test"),
-            split_label="test",
-            inference_style="single",
+            output_path=output_path_for_split(config, model.model_name, "test_all"),
+            split_label="test_all",
+            inference_style="multi",
         )
-        print("Completed single-image inference.")
+
+        if data_bundle.extra_test_dataset is not None and data_bundle.extra_test_name is not None:
+            run_prediction_loop(
+                model=model,
+                dataset=data_bundle.extra_test_dataset,
+                config=config,
+                output_path=output_path_for_split(config, model.model_name, data_bundle.extra_test_name),
+                split_label=data_bundle.extra_test_name,
+                inference_style="multi",
+            )
+
+        print("Completed single-and-multi inference.")
         return 0
     finally:
         wandb_module = get_wandb_module()

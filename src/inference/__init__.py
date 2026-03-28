@@ -1,1 +1,1 @@
-"""VQA inference module for both single-image and multi-image tasks"""
+"""VQA inference module for single-image, multi-image, and mixed tasks."""

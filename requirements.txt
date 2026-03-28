@@ -22,4 +22,5 @@ sentencepiece>=0.1.99
 protobuf>=3.20.0p
 
 wandb>=0.17.0
+PyYAML>=6.0.0
 google-genai

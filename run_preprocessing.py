@@ -10,7 +10,7 @@ SRC_DIR = CURRENT_DIR / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from eda_preprocessing.training import DATA_MODES, build_finetune_dataloaders, build_finetune_dataset_bundle
+from preprocessing.training import DATA_MODES, build_finetune_dataloaders, build_finetune_dataset_bundle
 
 
 def parse_args() -> argparse.Namespace:

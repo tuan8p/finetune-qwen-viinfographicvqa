@@ -1,201 +1,200 @@
-# Preprocessing cho `finetune-qwen-viinfographicvqa`
+# preprocessing
 
-Repo này hiện chỉ giữ phần preprocessing phục vụ finetune ViInfographicVQA.
+Folder này chứa module preprocessing on-the-fly cho ViInfographicVQA, dùng chung cho:
+- preview dữ liệu qua `run_preprocessing.py`
+- finetune trong `ft-qwen`
+- inference test trong `src/inference` thông qua `src/inference_core`
 
-Phạm vi hiện tại:
-- load raw dataset từ `ViInfographicVQA_dataset/data/*.json`
-- tạo `train / valid / test` logic bằng subdataset builder
-- preprocess text on-the-fly
-- bọc thành `Dataset` và `DataLoader`
+Preprocessing hiện dừng ở mức `Dataset` / `DataLoader`, không OCR và không chỉnh sửa pixel image.
 
-Namespace import vẫn là `eda_preprocessing` để không làm gãy code train đã viết trước đó.
+## Mục tiêu của preprocessing
 
-Không còn giữ EDA runner, analyzer, artifact writer, hay image analysis trong repo này. Thư mục `outputs/` được giữ nguyên nếu bạn cần tham chiếu artifact cũ, nhưng không nằm trong preprocessing pipeline.
+- đọc raw splits từ `ViInfographicVQA_dataset/data`
+- tạo logical split `train`, `valid`, `test`
+- hỗ trợ `single`, `multi`, `single_and_multi`
+- hỗ trợ `use_subdataset=True/False`
+- normalize text
+- filter sample có `answer > 20 token`
+- enrich metadata heuristic
+- trả về `Dataset` / `DataLoader` cho train và test
 
-## Cấu trúc chính
-
-```text
-finetune-qwen-viinfographicvqa/
-├── outputs/
-├── run_preprocessing.py
-├── src/
-│   └── eda_preprocessing/
-│       ├── core/
-│       ├── io/
-│       ├── preprocessing/
-│       ├── subdataset/
-│       └── training/
-└── tests/
-```
-
-## Pipeline dữ liệu
-
-Luồng xử lý:
+## Luồng xử lý
 
 ```text
-raw dataset
--> subdataset builder
--> preprocessing
--> PyTorch-style Dataset
--> collate_fn
+raw JSON
+-> io/dataset_loader.py
+-> subdataset/builder.py
+-> preprocessing/sample_preprocessor.py
+-> training/dataset.py
+-> training/collate.py
 -> DataLoader
 ```
 
-## Subdataset builder làm gì
+## Cấu trúc folder
 
-Module ở [builder.py](d:/Downloads/BTL_DLA/finetune-qwen-viinfographicvqa/src/eda_preprocessing/subdataset/builder.py).
+```text
+src/preprocessing/
+├── core/
+│   ├── contracts.py
+│   ├── heuristics.py
+│   ├── rules.py
+│   └── text_utils.py
+├── io/
+│   └── dataset_loader.py
+├── preprocessing/
+│   ├── answer_processor.py
+│   ├── contracts.py
+│   ├── sample_filter.py
+│   ├── sample_preprocessor.py
+│   └── text_normalizer.py
+├── subdataset/
+│   ├── builder.py
+│   └── contracts.py
+├── training/
+│   ├── collate.py
+│   ├── contracts.py
+│   ├── dataloaders.py
+│   └── dataset.py
+└── __init__.py
+```
 
-Quy tắc:
-- `use_subdataset=True`
-  lấy `10%` từ `single_train` và `multi_train`, sau đó tách `20%` của phần sampled này làm `valid`
-- `use_subdataset=False`
-  không tạo sub-train, mà lấy `20%` `valid` trực tiếp từ train gốc
-- `single_test` và `multi_test` luôn giữ nguyên từ raw
-- sampling theo từng raw split train, không gộp train trước rồi mới sample
-- seed mặc định là `42`
+## Các chức năng chính
 
-## Preprocessing làm gì
+### `io/dataset_loader.py`
+- load 4 raw split:
+  - `single_train`
+  - `single_test`
+  - `multi_train`
+  - `multi_test`
 
-Module ở [preprocessing](d:/Downloads/BTL_DLA/finetune-qwen-viinfographicvqa/src/eda_preprocessing/preprocessing).
+### `subdataset/builder.py`
+- tạo logical split theo rule hiện tại:
+  - `use_subdataset=True`
+    - lấy sub train từ train gốc
+    - tách validation từ sub train
+  - `use_subdataset=False`
+    - lấy validation trực tiếp từ train gốc
+- test giữ nguyên raw split rồi mới đi qua preprocessing
 
-Các bước đang áp dụng:
-- chuẩn hóa text về `NFC`
-- trim và collapse whitespace
-- tạo `lowercase`
-- tạo `ascii_folded`
-- đếm token của answer bằng whitespace tokenization
-- loại sample có `answer > 20 token`
-- gắn metadata heuristic:
-  `answer_type`, `question_type`, `reasoning_mode`, `cross_image_dependency`, `diacritic_consistency`, `tokenization_flags`
-- chuẩn hóa nhẹ answer theo type
-- tách `answer_segments` khi answer có `;`
+### `preprocessing/sample_preprocessor.py`
+- normalize text
+- đếm `answer_tokens`
+- filter `answer > 20 token`
+- classify heuristic:
+  - `answer_type`
+  - `question_type`
+  - `reasoning_mode`
+  - `cross_image_dependency`
+  - `diacritic_consistency`
+  - `tokenization_flags`
+- parse `answer_segments`
 
-Ràng buộc:
-- không resize image
-- không OCR
-- không validate image
-- không đọc metadata image
-- giữ nguyên `image_path` / `image_paths`
+### `training/dataset.py`
+- build dataset bundle cho:
+  - `single`
+  - `multi`
+  - `single_and_multi`
+- với mode `single_and_multi` có thêm `extra_test_dataset = test_single`
 
-## Dataloader có những mode nào
+### `training/dataloaders.py`
+- build `DataLoader` tương ứng từ dataset bundle
 
-`data_mode` hiện có 3 mode:
+## Data mode
 
+Có 3 mode:
 - `single`
-  chỉ dùng sample từ `single_train` / `single_test`
 - `multi`
-  chỉ dùng sample từ `multi_train` / `multi_test`
 - `single_and_multi`
-  dùng chung cả single và multi
 
-Các loader tương ứng:
+Riêng `single_and_multi` sẽ có:
+- `train`
+- `valid`
+- `test_all`
+- `test_single`
 
-- `single`
-  có `train_loader`, `valid_loader`, `test_loader`
-- `multi`
-  có `train_loader`, `valid_loader`, `test_loader`
-- `single_and_multi`
-  có `train_loader`, `valid_loader`, `test_loader`, `extra_test_loader`
+## Cách chạy preview preprocessing
 
-Ý nghĩa của test loader trong mode `single_and_multi`:
-- `test_loader`
-  là `test_all = single_test + multi_test`
-- `extra_test_loader`
-  là `test_single = single_test`
-
-Nếu bạn dùng dataset bundle thay vì dataloader bundle thì mapping tương tự:
-- `train_dataset`
-- `valid_dataset`
-- `test_dataset`
-- `extra_test_dataset` chỉ có trong mode `single_and_multi`
-
-## Cách chạy preprocessing
-
-Chạy summary:
+Từ root repo:
 
 ```bash
-python finetune-qwen-viinfographicvqa/run_preprocessing.py
+python run_preprocessing.py
 ```
 
-Preview một batch:
+### Mixed mode + preview batch
 
 ```bash
-python finetune-qwen-viinfographicvqa/run_preprocessing.py --preview-batch --batch-size 4
+python run_preprocessing.py --data-mode single_and_multi --preview-batch
 ```
 
-Tắt subdataset:
+### Single mode
 
 ```bash
-python finetune-qwen-viinfographicvqa/run_preprocessing.py --disable-subdataset
+python run_preprocessing.py --data-mode single
 ```
 
-Chạy theo mode dữ liệu:
+### Multi mode
 
 ```bash
-python finetune-qwen-viinfographicvqa/run_preprocessing.py --data-mode single
-python finetune-qwen-viinfographicvqa/run_preprocessing.py --data-mode multi
-python finetune-qwen-viinfographicvqa/run_preprocessing.py --data-mode single_and_multi
+python run_preprocessing.py --data-mode multi
 ```
 
-## Cách import vào code train
+### Tắt subdataset
 
-Thiết lập `PYTHONPATH`:
-
-```powershell
-$env:PYTHONPATH = (Resolve-Path .\finetune-qwen-viinfographicvqa\src)
+```bash
+python run_preprocessing.py --disable-subdataset
 ```
 
-Dùng dataset bundle:
+### Override seed và batch size preview
 
-```python
-from pathlib import Path
-
-from eda_preprocessing.training import build_finetune_dataset_bundle
-
-bundle = build_finetune_dataset_bundle(
-    dataset_root=Path("D:/Downloads/BTL_DLA/ViInfographicVQA_dataset"),
-    use_subdataset=True,
-    seed=42,
-    data_mode="single_and_multi",
-)
-
-train_dataset = bundle.train_dataset
-valid_dataset = bundle.valid_dataset
-test_all_dataset = bundle.test_dataset
-test_single_dataset = bundle.extra_test_dataset
+```bash
+python run_preprocessing.py --seed 42 --batch-size 4 --preview-batch
 ```
 
-Dùng dataloader bundle:
+## CLI options của `run_preprocessing.py`
 
-```python
-from pathlib import Path
+- `--dataset-root`
+- `--seed`
+- `--batch-size`
+- `--disable-subdataset`
+- `--data-mode`
+- `--preview-batch`
 
-from eda_preprocessing.training import build_finetune_dataloaders
+## Những rule preprocessing quan trọng
 
-loaders = build_finetune_dataloaders(
-    dataset_root=Path("D:/Downloads/BTL_DLA/ViInfographicVQA_dataset"),
-    batch_size=4,
-    use_subdataset=True,
-    seed=42,
-    data_mode="single_and_multi",
-)
+- Chỉ xử lý text và sample metadata.
+- Không resize ảnh.
+- Không OCR.
+- Không validate image content ở mức pixel.
+- Giữ nguyên `image_path` / `image_paths`.
+- Filter tất cả sample có `answer > 20 token`, gồm cả test.
 
-train_loader = loaders.train_loader
-valid_loader = loaders.valid_loader
-test_all_loader = loaders.test_loader
-test_single_loader = loaders.extra_test_loader
-```
+## Output logic
+
+Preprocessing không export dataset processed ra file mới trong flow chính.
+Nó trả trực tiếp:
+- `PreprocessedTrainingDataset`
+- `FinetuneDatasetBundle`
+- `FinetuneDataLoaderBundle`
+
+Đây là tầng mà `ft-qwen` và `inference_core` import vào để dùng lại.
+
+## API chính
+
+Các entrypoint hay dùng:
+- `build_finetune_dataset_bundle(...)`
+- `build_finetune_datasets(...)`
+- `build_finetune_dataloaders(...)`
+- `build_collate_fn()`
 
 ## Test
 
-Chạy toàn bộ test:
-
 ```bash
-python -m unittest discover finetune-qwen-viinfographicvqa/tests -v
+python -m unittest discover tests -v
 ```
 
-Các nhóm test chính:
-- loader raw dataset
+Các test hiện cover:
+- loader
+- preprocessing filter
 - subdataset builder
-- preprocessing rule
-- training dataset / dataloader
+- dataset bundle
+- dataloader bundle

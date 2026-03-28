@@ -1,6 +1,6 @@
 """Preprocessing utilities for ViInfographicVQA finetuning."""
 
-from eda_preprocessing.training import (
+from .training import (
     DATA_MODES,
     FinetuneDataLoaderBundle,
     FinetuneDatasetBundle,

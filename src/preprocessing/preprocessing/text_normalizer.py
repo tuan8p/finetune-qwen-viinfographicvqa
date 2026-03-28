@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unicodedata
 
-from eda_preprocessing.core.text_utils import lowercase_text, normalize_whitespace, remove_diacritics
+from ..core.text_utils import lowercase_text, normalize_whitespace, remove_diacritics
 
 
 def normalize_text(text: str) -> str:

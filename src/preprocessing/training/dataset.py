@@ -10,11 +10,11 @@ except (ImportError, OSError):
         def __class_getitem__(cls, _item):
             return cls
 
-from eda_preprocessing.core.contracts import DatasetSample
-from eda_preprocessing.io.dataset_loader import DatasetLoader, SUPPORTED_SPLITS
-from eda_preprocessing.preprocessing import PreprocessedSample, preprocess_samples
-from eda_preprocessing.subdataset import build_subdataset_splits
-from eda_preprocessing.training.contracts import DATA_MODES, FinetuneDatasetBundle
+from ..core.contracts import DatasetSample
+from ..io.dataset_loader import DatasetLoader, SUPPORTED_SPLITS
+from ..preprocessing import PreprocessedSample, preprocess_samples
+from ..subdataset import build_subdataset_splits
+from .contracts import DATA_MODES, FinetuneDatasetBundle
 
 
 class PreprocessedTrainingDataset(Dataset[PreprocessedSample]):

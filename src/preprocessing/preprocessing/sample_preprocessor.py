@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from eda_preprocessing.core.contracts import DatasetSample
-from eda_preprocessing.core.heuristics import (
+from ..core.contracts import DatasetSample
+from ..core.heuristics import (
     classify_answer_type,
     classify_cross_image_dependency,
     classify_diacritic_consistency,
@@ -9,10 +9,10 @@ from eda_preprocessing.core.heuristics import (
     classify_reasoning_mode,
     detect_tokenization_flags,
 )
-from eda_preprocessing.preprocessing.answer_processor import normalize_answer_by_type, split_answer_segments
-from eda_preprocessing.preprocessing.contracts import PreprocessedSample
-from eda_preprocessing.preprocessing.sample_filter import count_answer_tokens, should_keep_sample
-from eda_preprocessing.preprocessing.text_normalizer import ascii_fold_text, lowercase_normalized_text, normalize_text
+from .answer_processor import normalize_answer_by_type, split_answer_segments
+from .contracts import PreprocessedSample
+from .sample_filter import count_answer_tokens, should_keep_sample
+from .text_normalizer import ascii_fold_text, lowercase_normalized_text, normalize_text
 
 
 def _build_normalized_sample(sample: DatasetSample, question: str, answer: str) -> DatasetSample:
@@ -50,6 +50,7 @@ def preprocess_sample(sample: DatasetSample, subdataset_split: str) -> Preproces
         task_family=sample.task_family,
         image_type=sample.image_type,
         answer_source=sample.answer_source,
+        element=sample.element,
         image_paths=sample.image_paths,
         image_count=len(sample.image_paths),
         raw_question=sample.question,

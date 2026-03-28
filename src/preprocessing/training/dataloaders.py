@@ -3,9 +3,9 @@ from __future__ import annotations
 import math
 import random
 
-from eda_preprocessing.training.collate import build_collate_fn
-from eda_preprocessing.training.contracts import FinetuneDataLoaderBundle
-from eda_preprocessing.training.dataset import build_finetune_dataset_bundle
+from .collate import build_collate_fn
+from .contracts import FinetuneDataLoaderBundle
+from .dataset import build_finetune_dataset_bundle
 
 
 try:

@@ -4,7 +4,6 @@ import json
 import random
 from pathlib import Path
 
-from eda_preprocessing.core.config import PipelineConfig
 from eda_preprocessing.core.contracts import DatasetSample, MultiSample, SingleSample
 
 
@@ -23,15 +22,21 @@ class DatasetLoader:
         self.dataset_root = dataset_root
         self.data_root = dataset_root / "data"
 
-    def load(self, config: PipelineConfig) -> list[DatasetSample]:
+    def load(
+        self,
+        split_names: tuple[str, ...],
+        mode: str = "full",
+        sample_size: int | None = None,
+        seed: int = 42,
+    ) -> list[DatasetSample]:
         samples: list[DatasetSample] = []
-        rng = random.Random(config.seed)
+        rng = random.Random(seed)
 
-        for split_name in config.splits:
+        for split_name in split_names:
             raw_samples = self._load_split(split_name)
-            if config.mode == "sample":
-                sample_size = min(len(raw_samples), config.sample_size)
-                raw_samples = rng.sample(raw_samples, sample_size)
+            if mode == "sample" and sample_size is not None:
+                selected_size = min(len(raw_samples), sample_size)
+                raw_samples = rng.sample(raw_samples, selected_size)
             samples.extend(raw_samples)
         return samples
 

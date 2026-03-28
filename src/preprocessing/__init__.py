@@ -1,4 +1,4 @@
-"""EDA preprocessing package for ViInfographicVQA."""
+"""Preprocessing utilities for ViInfographicVQA finetuning."""
 
 from eda_preprocessing.training import (
     DATA_MODES,

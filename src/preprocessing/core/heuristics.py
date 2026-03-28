@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 import unicodedata
 
-from eda_preprocessing.core.contracts import DatasetSample, ImageRecord
+from eda_preprocessing.core.contracts import DatasetSample
 from eda_preprocessing.core.rules import HEURISTIC_RULES
 from eda_preprocessing.core.text_utils import (
     contains_diacritics,
@@ -177,22 +177,3 @@ def detect_tokenization_flags(text: str) -> list[str]:
     if _has_known_abbreviation(text):
         flags.append("abbreviation")
     return sorted(set(flags))
-
-
-def image_record_to_dict(record: ImageRecord) -> dict[str, object]:
-    return {
-        "image_path": record.image_path,
-        "absolute_path": str(record.absolute_path),
-        "split_names": list(record.split_names),
-        "task_families": list(record.task_families),
-        "usage_count": record.usage_count,
-        "width": record.width,
-        "height": record.height,
-        "aspect_ratio": record.aspect_ratio,
-        "shorter_side": record.shorter_side,
-        "edge_density": record.edge_density,
-        "entropy": record.entropy,
-        "connected_components": record.connected_components,
-        "status": record.status,
-        "error_message": record.error_message,
-    }

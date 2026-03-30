@@ -31,7 +31,7 @@ max_seq_length: 1024
 use_wandb: true
 wandb_env_file: "ft-qwen/.wandb.env"
 wandb_project: "vqa-qlora"
-wandb_entity: dla_hcmut # team's entity
+wandb_entity: dla-hcmut # team's entity
 wandb_group: "qwen-finetune"
 wandb_job_type: "train"
 wandb_run_name: null

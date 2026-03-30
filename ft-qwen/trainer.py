@@ -16,7 +16,7 @@ from transformers import (
     TrainerState,
     TrainingArguments,
 )
-from trl import SFTTrainer
+from trl import SFTTrainer, SFTConfig
 
 from config import QwenFinetuneConfig
 from runtime_data import QwenRuntimeDataBundle, VQADataCollator
@@ -132,7 +132,7 @@ def train_qlora(config: QwenFinetuneConfig, data_bundle: QwenRuntimeDataBundle) 
     else:
         training_kwargs.update({"eval_strategy": "no", "load_best_model_at_end": False})
 
-    training_args = TrainingArguments(**training_kwargs)
+    training_args = SFTConfig(max_seq_length=config.max_seq_length, **training_kwargs)
     metrics_callback = SaveMetricsCallback(output_dir=config.adapter_out_dir)
 
     trainer = SFTTrainer(
@@ -141,7 +141,6 @@ def train_qlora(config: QwenFinetuneConfig, data_bundle: QwenRuntimeDataBundle) 
         train_dataset=data_bundle.train_dataset,
         eval_dataset=data_bundle.valid_dataset if has_validation else None,
         data_collator=collator,
-        max_seq_length=config.max_seq_length,
         dataset_kwargs={"skip_prepare_dataset": True},
         callbacks=[metrics_callback],
     )

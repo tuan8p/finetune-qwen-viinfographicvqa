@@ -44,7 +44,7 @@ finetune-qwen-viinfographicvqa/
 ### `ft-qwen`
 - Chỉ lo training.
 - Nhận dữ liệu đã qua preprocessing.
-- Hỗ trợ `data_mode = single | multi | single_and_multi`.
+- Hỗ trợ `data_mode = single |eemulti | single_and_multi`.
 - Chọn best model theo `eval_loss` trên tập validation.
 - Lưu `final_adapter` và `training_metrics.json`.
 - Có tích hợp WandB cho run train.

@@ -1,4 +1,4 @@
-dataset_root: "./ViInfographicVQA"
+dataset_root: "./workspace/ViInfographicVQA"
 data_mode: "single" # ""single, "multi", "single_and_multi" 
 use_subdataset: true
 

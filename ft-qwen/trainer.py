@@ -122,7 +122,8 @@ def train_qlora(config: QwenFinetuneConfig, data_bundle: QwenRuntimeDataBundle) 
     if has_validation:
         training_kwargs.update(
             {
-                "eval_strategy": "epoch",
+                "eval_strategy": "steps",
+                "eval_steps": config.save_steps,
                 "load_best_model_at_end": True,
                 "metric_for_best_model": "eval_loss",
                 "greater_is_better": False,

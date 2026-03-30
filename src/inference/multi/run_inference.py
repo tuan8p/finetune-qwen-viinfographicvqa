@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from src.common.archive_utils import zip_directory_output
 from src.inference_core.runner_utils import (
     build_arg_parser,
     build_runtime_config,
@@ -51,6 +52,8 @@ def main() -> int:
             split_label="test",
             inference_style="multi",
         )
+        inference_archive_path = zip_directory_output(config.output_dir)
+        print(f"Inference output archive saved at: {inference_archive_path}")
         print("Completed multi-image inference.")
         return 0
     finally:

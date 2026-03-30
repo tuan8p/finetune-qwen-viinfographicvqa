@@ -1,6 +1,6 @@
 dataset_root: "/workspace/ViInfographicVQA"
 data_mode: "single" # ""single, "multi", "single_and_multi" 
-use_subdataset: true
+use_subdataset: false
 
 adapter_out_dir: "checkpoints/lora_adapters"
 
@@ -13,7 +13,7 @@ max_pixels: 1003520
 
 seed: 42
 epochs: 3
-batch_size: 4
+batch_size: 16 # for H100
 grad_accum: 8
 lr: 0.0002
 
@@ -26,10 +26,10 @@ save_total_limit: 3
 logging_steps: 10
 max_seq_length: 1024
 
-use_wandb: false
+use_wandb: true
 wandb_env_file: "ft-qwen/.wandb.env"
 wandb_project: "vqa-qlora"
-wandb_entity: null
+wandb_entity: dla_hcmut # team's entity
 wandb_group: "qwen-finetune"
 wandb_job_type: "train"
 wandb_run_name: null

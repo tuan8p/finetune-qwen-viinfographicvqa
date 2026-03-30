@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
@@ -9,6 +10,7 @@ import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+from src.common.output_naming import resolve_stage_output_dir
 from src.common.utils import set_seed
 from src.inference_core.config import InferenceConfig, build_config, save_config_yaml
 from src.inference_core.runtime_data import (
@@ -49,7 +51,7 @@ def build_runtime_config(
 ) -> InferenceConfig:
     output_dir = args.output_dir or str(Path(default_output_subdir).resolve())
     use_subdataset_override = False if args.disable_subdataset else None
-    return build_config(
+    config = build_config(
         args.config,
         data_mode=data_mode,
         dataset_root=args.dataset_root,
@@ -63,6 +65,13 @@ def build_runtime_config(
         use_wandb=True if args.use_wandb else None,
         use_subdataset=use_subdataset_override,
     )
+    named_output_dir = resolve_stage_output_dir(
+        config.output_dir,
+        stage="inference",
+        model_ref=config.model_key,
+        data_mode=config.data_mode,
+    )
+    return replace(config, output_dir=str(named_output_dir))
 
 
 def import_model_class(models: dict[str, str], model_key: str):

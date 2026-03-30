@@ -6,6 +6,7 @@ from bootstrap import ensure_src_path
 
 ensure_src_path()
 
+from common.archive_utils import zip_directory_output
 from common.utils import set_seed
 from cli import build_runtime_config, parse_args
 from config import save_config_yaml
@@ -32,6 +33,8 @@ def main() -> None:
 
         adapter_path = train_qlora(config, data_bundle)
         print(f"Training completed. Final adapter saved at: {adapter_path}")
+        finetune_archive_path = zip_directory_output(config.adapter_out_dir)
+        print(f"Finetune output archive saved at: {finetune_archive_path}")
         print("finish")
     finally:
         wandb_module = get_wandb_module()

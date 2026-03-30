@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 
 from bootstrap import ensure_src_path
 
 ensure_src_path()
 
+from common.output_naming import resolve_stage_output_dir
 from config import DEFAULT_CONFIG_PATH, QwenFinetuneConfig, build_config
 from preprocessing.training import DATA_MODES
 
@@ -59,7 +61,7 @@ def parse_args() -> argparse.Namespace:
 def build_runtime_config(args: argparse.Namespace) -> QwenFinetuneConfig:
     use_subdataset = None if not args.disable_subdataset else False
     use_wandb = True if args.use_wandb else None
-    return build_config(
+    config = build_config(
         config_path=args.config,
         dataset_root=args.dataset_root,
         data_mode=args.data_mode,
@@ -84,3 +86,10 @@ def build_runtime_config(args: argparse.Namespace) -> QwenFinetuneConfig:
         wandb_env_file=args.wandb_env_file,
         wandb_tags=args.wandb_tags,
     )
+    named_adapter_out_dir = resolve_stage_output_dir(
+        config.adapter_out_dir,
+        stage="finetune",
+        model_ref=config.model_id,
+        data_mode=config.data_mode,
+    )
+    return replace(config, adapter_out_dir=str(named_adapter_out_dir))

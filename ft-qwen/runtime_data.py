@@ -122,6 +122,7 @@ def build_runtime_data_bundle(config: QwenFinetuneConfig) -> QwenRuntimeDataBund
         use_subdataset=config.use_subdataset,
         seed=config.seed,
         data_mode=config.data_mode,
+        filter_answers_over_20_tokens=config.filter_answers_over_20_tokens,
     )
 
     bundle = QwenRuntimeDataBundle(
@@ -133,6 +134,7 @@ def build_runtime_data_bundle(config: QwenFinetuneConfig) -> QwenRuntimeDataBund
     print("\n[Bước 1] Chuẩn bị dữ liệu bằng preprocessing pipeline...")
     print(f"- data_mode: {bundle.data_mode}")
     print(f"- use_subdataset: {config.use_subdataset}")
+    print(f"- filter_answers_over_20_tokens: {config.filter_answers_over_20_tokens}")
     print(f"- train_samples: {len(bundle.train_dataset)}")
     print(f"- valid_samples: {len(bundle.valid_dataset)}")
     return bundle

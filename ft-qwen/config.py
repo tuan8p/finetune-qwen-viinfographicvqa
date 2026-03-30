@@ -20,6 +20,8 @@ class QwenFinetuneConfig:
     dataset_root: str = str(DEFAULT_DATASET_ROOT)
     data_mode: str = "single"
     use_subdataset: bool = True
+    # When True, drop samples whose normalized answer has >20 whitespace-separated tokens.
+    filter_answers_over_20_tokens: bool = True
     adapter_out_dir: str = "checkpoints/lora_adapters"
     model_id: str = "Qwen/Qwen2.5-VL-7B-Instruct"
     system_prompt: str = (

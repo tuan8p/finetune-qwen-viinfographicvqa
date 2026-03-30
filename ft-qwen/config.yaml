@@ -1,6 +1,8 @@
 dataset_root: "/workspace/ViInfographicVQA"
 data_mode: "single" # ""single, "multi", "single_and_multi" 
 use_subdataset: false
+# Bật: loại mẫu có câu trả lời (sau normalize) dài hơn 20 token tách bằng khoảng trắng. Tắt: giữ mọi mẫu.
+filter_answers_over_20_tokens: false
 
 adapter_out_dir: "checkpoints/lora_adapters"
 

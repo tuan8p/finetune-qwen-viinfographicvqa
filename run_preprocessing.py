@@ -48,6 +48,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Build dataloaders and print one preview batch summary",
     )
+    parser.add_argument(
+        "--no-filter-answers-over-20-tokens",
+        action="store_true",
+        help="Keep samples whose normalized answer has more than 20 whitespace tokens",
+    )
     return parser.parse_args()
 
 
@@ -59,6 +64,7 @@ def main() -> int:
         use_subdataset=not args.disable_subdataset,
         seed=args.seed,
         data_mode=args.data_mode,
+        filter_answers_over_20_tokens=not args.no_filter_answers_over_20_tokens,
     )
 
     print("Preprocessing summary")
@@ -66,6 +72,7 @@ def main() -> int:
     print(f"- use_subdataset: {not args.disable_subdataset}")
     print(f"- seed: {args.seed}")
     print(f"- data_mode: {args.data_mode}")
+    print(f"- filter_answers_over_20_tokens: {not args.no_filter_answers_over_20_tokens}")
     print(f"- train_samples: {len(bundle.train_dataset)}")
     print(f"- valid_samples: {len(bundle.valid_dataset)}")
     print(f"- test_all_samples: {len(bundle.test_dataset)}")
@@ -78,6 +85,7 @@ def main() -> int:
             batch_size=args.batch_size,
             use_subdataset=not args.disable_subdataset,
             seed=args.seed,
+            filter_answers_over_20_tokens=not args.no_filter_answers_over_20_tokens,
             data_mode=args.data_mode,
         )
 

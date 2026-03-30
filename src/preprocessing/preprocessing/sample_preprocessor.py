@@ -29,11 +29,16 @@ def _build_normalized_sample(sample: DatasetSample, question: str, answer: str) 
     )
 
 
-def preprocess_sample(sample: DatasetSample, subdataset_split: str) -> PreprocessedSample | None:
+def preprocess_sample(
+    sample: DatasetSample,
+    subdataset_split: str,
+    *,
+    filter_answers_over_20_tokens: bool = True,
+) -> PreprocessedSample | None:
     question_normalized = normalize_text(sample.question)
     answer_base = normalize_text(sample.answer)
     answer_tokens = count_answer_tokens(answer_base)
-    if not should_keep_sample(answer_tokens):
+    if filter_answers_over_20_tokens and not should_keep_sample(answer_tokens):
         return None
 
     normalized_sample = _build_normalized_sample(sample, question_normalized, answer_base)
@@ -75,10 +80,16 @@ def preprocess_sample(sample: DatasetSample, subdataset_split: str) -> Preproces
 def preprocess_samples(
     samples: list[DatasetSample] | tuple[DatasetSample, ...],
     subdataset_split: str,
+    *,
+    filter_answers_over_20_tokens: bool = True,
 ) -> list[PreprocessedSample]:
     processed_samples: list[PreprocessedSample] = []
     for sample in samples:
-        processed = preprocess_sample(sample, subdataset_split=subdataset_split)
+        processed = preprocess_sample(
+            sample,
+            subdataset_split=subdataset_split,
+            filter_answers_over_20_tokens=filter_answers_over_20_tokens,
+        )
         if processed is not None:
             processed_samples.append(processed)
     return processed_samples

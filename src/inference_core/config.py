@@ -32,6 +32,7 @@ class InferenceConfig:
     dataset_root: str = str(DEFAULT_DATASET_ROOT)
     data_mode: str = "single"
     use_subdataset: bool = False
+    filter_answers_over_20_tokens: bool = True
     seed: int = 42
     model_key: str = "qwenvl"
     model_path: str | None = None

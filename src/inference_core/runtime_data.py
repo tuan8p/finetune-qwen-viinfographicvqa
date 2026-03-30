@@ -63,6 +63,7 @@ def build_inference_data_bundle(config: InferenceConfig) -> InferenceRuntimeData
         use_subdataset=config.use_subdataset,
         seed=config.seed,
         data_mode=config.data_mode,
+        filter_answers_over_20_tokens=config.filter_answers_over_20_tokens,
     )
 
     bundle = InferenceRuntimeDataBundle(
@@ -78,6 +79,7 @@ def build_inference_data_bundle(config: InferenceConfig) -> InferenceRuntimeData
     print("\n[Inference] Chuẩn bị dữ liệu test bằng preprocessing pipeline...")
     print(f"- data_mode: {bundle.data_mode}")
     print(f"- use_subdataset: {config.use_subdataset}")
+    print(f"- filter_answers_over_20_tokens: {config.filter_answers_over_20_tokens}")
     print(f"- test_samples: {len(bundle.test_dataset)}")
     if bundle.extra_test_dataset is not None and bundle.extra_test_name is not None:
         print(f"- {bundle.extra_test_name}_samples: {len(bundle.extra_test_dataset)}")

@@ -41,12 +41,15 @@ def build_finetune_dataloaders(
     seed: int = 42,
     data_mode: str = "single_and_multi",
     shuffle_train: bool = True,
+    *,
+    filter_answers_over_20_tokens: bool = True,
 ) -> FinetuneDataLoaderBundle:
     bundle = build_finetune_dataset_bundle(
         dataset_root=dataset_root,
         use_subdataset=use_subdataset,
         seed=seed,
         data_mode=data_mode,
+        filter_answers_over_20_tokens=filter_answers_over_20_tokens,
     )
     collate_fn = build_collate_fn()
 

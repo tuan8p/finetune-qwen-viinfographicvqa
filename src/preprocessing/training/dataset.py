@@ -22,14 +22,19 @@ class PreprocessedTrainingDataset(Dataset[PreprocessedSample]):
         self,
         samples: Sequence[DatasetSample] | Sequence[PreprocessedSample],
         subdataset_split: str,
+        *,
+        filter_answers_over_20_tokens: bool = True,
     ) -> None:
         self.subdataset_split = subdataset_split
-        self.samples = tuple(self._coerce_samples(samples, subdataset_split))
+        self.samples = tuple(
+            self._coerce_samples(samples, subdataset_split, filter_answers_over_20_tokens)
+        )
 
     def _coerce_samples(
         self,
         samples: Sequence[DatasetSample] | Sequence[PreprocessedSample],
         subdataset_split: str,
+        filter_answers_over_20_tokens: bool,
     ) -> list[PreprocessedSample]:
         materialized = list(samples)
         if not materialized:
@@ -37,7 +42,11 @@ class PreprocessedTrainingDataset(Dataset[PreprocessedSample]):
 
         if isinstance(materialized[0], PreprocessedSample):
             return [sample for sample in materialized if isinstance(sample, PreprocessedSample)]
-        return preprocess_samples(materialized, subdataset_split=subdataset_split)
+        return preprocess_samples(
+            materialized,
+            subdataset_split=subdataset_split,
+            filter_answers_over_20_tokens=filter_answers_over_20_tokens,
+        )
 
     def __len__(self) -> int:
         return len(self.samples)
@@ -57,6 +66,8 @@ def _filter_samples_by_split(
 def _build_dataset_bundle_from_logical_splits(
     logical_splits,
     data_mode: str,
+    *,
+    filter_answers_over_20_tokens: bool = True,
 ) -> FinetuneDatasetBundle:
     if data_mode not in DATA_MODES:
         raise ValueError(f"Unsupported data_mode: {data_mode}. Expected one of {DATA_MODES}")
@@ -79,11 +90,29 @@ def _build_dataset_bundle_from_logical_splits(
         extra_test_samples = _filter_samples_by_split(logical_splits.test_samples, ("single_test",))
         extra_test_name = "test_single"
 
-    train_dataset = PreprocessedTrainingDataset(train_samples, subdataset_split="train")
-    valid_dataset = PreprocessedTrainingDataset(valid_samples, subdataset_split="valid")
-    test_dataset = PreprocessedTrainingDataset(test_samples, subdataset_split="test")
+    train_dataset = PreprocessedTrainingDataset(
+        train_samples,
+        subdataset_split="train",
+        filter_answers_over_20_tokens=filter_answers_over_20_tokens,
+    )
+    valid_dataset = PreprocessedTrainingDataset(
+        valid_samples,
+        subdataset_split="valid",
+        filter_answers_over_20_tokens=filter_answers_over_20_tokens,
+    )
+    test_dataset = PreprocessedTrainingDataset(
+        test_samples,
+        subdataset_split="test",
+        filter_answers_over_20_tokens=filter_answers_over_20_tokens,
+    )
     extra_test_dataset = (
-        PreprocessedTrainingDataset(extra_test_samples, subdataset_split="test") if extra_test_samples is not None else None
+        PreprocessedTrainingDataset(
+            extra_test_samples,
+            subdataset_split="test",
+            filter_answers_over_20_tokens=filter_answers_over_20_tokens,
+        )
+        if extra_test_samples is not None
+        else None
     )
 
     return FinetuneDatasetBundle(
@@ -101,12 +130,18 @@ def build_finetune_dataset_bundle(
     use_subdataset: bool = True,
     seed: int = 42,
     data_mode: str = "single_and_multi",
+    *,
+    filter_answers_over_20_tokens: bool = True,
 ) -> FinetuneDatasetBundle:
     resolved_root = Path(dataset_root).resolve()
     loader = DatasetLoader(resolved_root)
     raw_samples = loader.load_splits(SUPPORTED_SPLITS)
     logical_splits = build_subdataset_splits(raw_samples, enabled=use_subdataset, seed=seed)
-    return _build_dataset_bundle_from_logical_splits(logical_splits, data_mode=data_mode)
+    return _build_dataset_bundle_from_logical_splits(
+        logical_splits,
+        data_mode=data_mode,
+        filter_answers_over_20_tokens=filter_answers_over_20_tokens,
+    )
 
 
 def build_finetune_datasets(
@@ -114,11 +149,14 @@ def build_finetune_datasets(
     use_subdataset: bool = True,
     seed: int = 42,
     data_mode: str = "single_and_multi",
+    *,
+    filter_answers_over_20_tokens: bool = True,
 ) -> tuple[PreprocessedTrainingDataset, PreprocessedTrainingDataset, PreprocessedTrainingDataset]:
     bundle = build_finetune_dataset_bundle(
         dataset_root=dataset_root,
         use_subdataset=use_subdataset,
         seed=seed,
         data_mode=data_mode,
+        filter_answers_over_20_tokens=filter_answers_over_20_tokens,
     )
     return bundle.train_dataset, bundle.valid_dataset, bundle.test_dataset

@@ -1,6 +1,7 @@
 dataset_root: "D:/Downloads/BTL_DLA/ViInfographicVQA_dataset"
 data_mode: "single"
 use_subdataset: false
+filter_answers_over_20_tokens: true
 seed: 42
 
 model_key: "qwenvl"

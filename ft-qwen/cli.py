@@ -34,6 +34,11 @@ def parse_args() -> argparse.Namespace:
         help="Path to ViInfographicVQA_dataset root containing data/ and images/",
     )
     parser.add_argument("--disable-subdataset", action="store_true")
+    parser.add_argument(
+        "--no-filter-answers-over-20-tokens",
+        action="store_true",
+        help="Keep all samples regardless of answer length (overrides config filter_answers_over_20_tokens)",
+    )
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--batch_size", "--batch-size", dest="batch_size", type=int, default=None)
     parser.add_argument("--lr", type=float, default=None)
@@ -61,11 +66,13 @@ def parse_args() -> argparse.Namespace:
 def build_runtime_config(args: argparse.Namespace) -> QwenFinetuneConfig:
     use_subdataset = None if not args.disable_subdataset else False
     use_wandb = True if args.use_wandb else None
+    filter_answers_over_20_tokens = False if args.no_filter_answers_over_20_tokens else None
     config = build_config(
         config_path=args.config,
         dataset_root=args.dataset_root,
         data_mode=args.data_mode,
         use_subdataset=use_subdataset,
+        filter_answers_over_20_tokens=filter_answers_over_20_tokens,
         adapter_out_dir=args.adapter_out_dir,
         attn_implementation=args.attn_implementation,
         seed=args.seed,

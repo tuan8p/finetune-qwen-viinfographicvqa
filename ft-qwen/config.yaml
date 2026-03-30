@@ -1,6 +1,6 @@
-dataset_root: "D:/Downloads/BTL_DLA/ViInfographicVQA_dataset"
+dataset_root: "/kaggle/working/ViInfographicVQA"
 data_mode: "single" # ""single, "multi", "single_and_multi" 
-use_subdataset: false
+use_subdataset: true
 
 adapter_out_dir: "checkpoints/lora_adapters"
 

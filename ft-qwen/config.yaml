@@ -1,4 +1,4 @@
-dataset_root: "/kaggle/working/ViInfographicVQA"
+dataset_root: "./ViInfographicVQA"
 data_mode: "single" # ""single, "multi", "single_and_multi" 
 use_subdataset: true
 
@@ -6,7 +6,7 @@ adapter_out_dir: "checkpoints/lora_adapters"
 
 model_id: "Qwen/Qwen2.5-VL-7B-Instruct"
 system_prompt: "Answer the following question based solely on the image content concisely with a single term."
-attn_implementation: "sdpa"
+attn_implementation: "flash_attention_2"
 
 min_pixels: 200704
 max_pixels: 1003520

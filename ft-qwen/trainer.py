@@ -132,7 +132,7 @@ def train_qlora(config: QwenFinetuneConfig, data_bundle: QwenRuntimeDataBundle) 
     else:
         training_kwargs.update({"eval_strategy": "no", "load_best_model_at_end": False})
 
-    training_args = SFTConfig(max_seq_length=config.max_seq_length, **training_kwargs)
+    training_args = SFTConfig(max_length=config.max_seq_length, **training_kwargs)
     metrics_callback = SaveMetricsCallback(output_dir=config.adapter_out_dir)
 
     trainer = SFTTrainer(

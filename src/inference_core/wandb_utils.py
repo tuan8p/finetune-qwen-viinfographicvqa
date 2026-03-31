@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import hashlib
 import os
 import re
 import socket
 from pathlib import Path
 from typing import Any
+
+# wandb.sdk.artifacts._validators.validate_artifact_name
+WANDB_ARTIFACT_NAME_MAX_LEN = 128
 
 try:
     import wandb
@@ -21,6 +25,14 @@ def slugify(value: str) -> str:
     return normalized or "run"
 
 
+def _truncate_wandb_artifact_name(name: str, max_len: int = WANDB_ARTIFACT_NAME_MAX_LEN) -> str:
+    if len(name) <= max_len:
+        return name
+    digest = hashlib.sha256(name.encode()).hexdigest()[:12]
+    suffix = f"-{digest}"
+    return name[: max_len - len(suffix)] + suffix
+
+
 def get_wandb_module():
     return wandb
 
@@ -35,7 +47,7 @@ def require_wandb():
 
 
 def build_run_slug(config: InferenceConfig) -> str:
-    model_name = slugify(config.model_path or config.model_key)
+    model_name = slugify(config.model_key)
     subdataset_suffix = "sub" if config.use_subdataset else "full"
     return f"{model_name}-{config.data_mode}-{subdataset_suffix}-bs{config.batch_size}-seed{config.seed}"
 
@@ -58,7 +70,8 @@ def build_wandb_run_name(config: InferenceConfig) -> str:
 
 def build_artifact_name(config: InferenceConfig, artifact_role: str) -> str:
     project_name = slugify(config.wandb_project or "wandb")
-    return f"{project_name}-{build_run_slug(config)}-{slugify(artifact_role)}"
+    raw = f"{project_name}-{build_run_slug(config)}-{slugify(artifact_role)}"
+    return _truncate_wandb_artifact_name(raw)
 
 
 def init_wandb_run(config: InferenceConfig, effective_config_path: Path) -> dict[str, str]:

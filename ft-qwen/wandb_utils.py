@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import hashlib
 import os
 import re
 import socket
 from pathlib import Path
 from typing import Any
+
+WANDB_ARTIFACT_NAME_MAX_LEN = 128
 
 try:
     import wandb
@@ -67,9 +70,18 @@ def build_wandb_run_name(config: QwenFinetuneConfig) -> str:
     return config.wandb_run_name or build_run_slug(config)
 
 
+def _truncate_wandb_artifact_name(name: str, max_len: int = WANDB_ARTIFACT_NAME_MAX_LEN) -> str:
+    if len(name) <= max_len:
+        return name
+    digest = hashlib.sha256(name.encode()).hexdigest()[:12]
+    suffix = f"-{digest}"
+    return name[: max_len - len(suffix)] + suffix
+
+
 def build_artifact_name(config: QwenFinetuneConfig, artifact_role: str) -> str:
     project_name = slugify(config.wandb_project or "wandb")
-    return f"{project_name}-{build_run_slug(config)}-{slugify(artifact_role)}"
+    raw = f"{project_name}-{build_run_slug(config)}-{slugify(artifact_role)}"
+    return _truncate_wandb_artifact_name(raw)
 
 
 def init_wandb_run(config: QwenFinetuneConfig, effective_config_path: Path) -> dict[str, str]:

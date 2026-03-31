@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import os
 import re
 import socket
@@ -8,6 +9,21 @@ from pathlib import Path
 from typing import Any
 
 WANDB_ARTIFACT_NAME_MAX_LEN = 128
+
+# Load output_naming trực tiếp — tránh `import common` (kéo torch qua common/__init__.py).
+_output_naming_mod: Any = None
+
+
+def _build_stage_output_name(stage: str, model_ref: str, data_mode: str) -> str:
+    global _output_naming_mod
+    if _output_naming_mod is None:
+        path = Path(__file__).resolve().parent.parent / "src" / "common" / "output_naming.py"
+        spec = importlib.util.spec_from_file_location("_viinfographic_output_naming", path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"Cannot load output_naming from {path}")
+        _output_naming_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(_output_naming_mod)
+    return _output_naming_mod.build_stage_output_name(stage, model_ref, data_mode)
 
 try:
     import wandb
@@ -37,20 +53,9 @@ def require_wandb():
     return wandb
 
 
-def short_model_name(model_id: str) -> str:
-    return slugify(model_id.split("/")[-1])
-
-
 def build_run_slug(config: QwenFinetuneConfig) -> str:
-    subdataset_suffix = "sub" if config.use_subdataset else "full"
-    return (
-        f"{short_model_name(config.model_id)}"
-        f"-{config.data_mode}"
-        f"-{subdataset_suffix}"
-        f"-bs{config.batch_size}"
-        f"-ga{config.grad_accum}"
-        f"-seed{config.seed}"
-    )
+    """Giống inference: finetune_<model_alias>_<data_mode>, vd. finetune_qwen_single (qwen = model, single = data_mode)."""
+    return _build_stage_output_name("finetune", config.model_id, config.data_mode).lower()
 
 
 def build_wandb_tags(config: QwenFinetuneConfig) -> list[str]:
@@ -59,6 +64,7 @@ def build_wandb_tags(config: QwenFinetuneConfig) -> list[str]:
         [
             f"data_mode:{config.data_mode}",
             f"subdataset:{'on' if config.use_subdataset else 'off'}",
+            f"model_id:{config.model_id}",
             f"attn:{config.attn_implementation}",
             f"quant:{'4bit' if config.load_in_4bit else 'full'}",
         ]
@@ -67,7 +73,8 @@ def build_wandb_tags(config: QwenFinetuneConfig) -> list[str]:
 
 
 def build_wandb_run_name(config: QwenFinetuneConfig) -> str:
-    return config.wandb_run_name or build_run_slug(config)
+    name = config.wandb_run_name or build_run_slug(config)
+    return _truncate_wandb_artifact_name(name)
 
 
 def _truncate_wandb_artifact_name(name: str, max_len: int = WANDB_ARTIFACT_NAME_MAX_LEN) -> str:
@@ -79,8 +86,7 @@ def _truncate_wandb_artifact_name(name: str, max_len: int = WANDB_ARTIFACT_NAME_
 
 
 def build_artifact_name(config: QwenFinetuneConfig, artifact_role: str) -> str:
-    project_name = slugify(config.wandb_project or "wandb")
-    raw = f"{project_name}-{build_run_slug(config)}-{slugify(artifact_role)}"
+    raw = f"{build_run_slug(config)}-{slugify(artifact_role)}"
     return _truncate_wandb_artifact_name(raw)
 
 

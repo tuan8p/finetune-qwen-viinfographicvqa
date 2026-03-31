@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import os
 import re
 import socket
@@ -17,6 +18,21 @@ except ImportError:  # pragma: no cover - optional dependency
 
 from src.inference_core.config import InferenceConfig, config_to_dict, load_wandb_env_file
 from src.inference_core.runtime_data import InferenceRuntimeDataBundle
+
+# Load output_naming trực tiếp — tránh `import src.common` (kéo torch qua common/__init__.py).
+_output_naming_mod: Any = None
+
+
+def _build_stage_output_name(stage: str, model_ref: str, data_mode: str) -> str:
+    global _output_naming_mod
+    if _output_naming_mod is None:
+        path = Path(__file__).resolve().parent.parent / "common" / "output_naming.py"
+        spec = importlib.util.spec_from_file_location("_viinfographic_output_naming", path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"Cannot load output_naming from {path}")
+        _output_naming_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(_output_naming_mod)
+    return _output_naming_mod.build_stage_output_name(stage, model_ref, data_mode)
 
 
 def slugify(value: str) -> str:
@@ -47,9 +63,8 @@ def require_wandb():
 
 
 def build_run_slug(config: InferenceConfig) -> str:
-    model_name = slugify(config.model_key)
-    subdataset_suffix = "sub" if config.use_subdataset else "full"
-    return f"{model_name}-{config.data_mode}-{subdataset_suffix}-bs{config.batch_size}-seed{config.seed}"
+    """Cùng quy tắc với thư mục output (vd. inference_qwen_single); không dùng model_path."""
+    return _build_stage_output_name("inference", config.model_key, config.data_mode).lower()
 
 
 def build_wandb_tags(config: InferenceConfig) -> list[str]:
@@ -65,12 +80,13 @@ def build_wandb_tags(config: InferenceConfig) -> list[str]:
 
 
 def build_wandb_run_name(config: InferenceConfig) -> str:
-    return config.wandb_run_name or build_run_slug(config)
+    name = config.wandb_run_name or build_run_slug(config)
+    return _truncate_wandb_artifact_name(name)
 
 
 def build_artifact_name(config: InferenceConfig, artifact_role: str) -> str:
-    project_name = slugify(config.wandb_project or "wandb")
-    raw = f"{project_name}-{build_run_slug(config)}-{slugify(artifact_role)}"
+    # Chỉ run_slug + role; không ghép thêm project prefix (tránh dài). Project đã có trên WandB UI.
+    raw = f"{build_run_slug(config)}-{slugify(artifact_role)}"
     return _truncate_wandb_artifact_name(raw)
 
 
